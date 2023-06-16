@@ -9,8 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -27,16 +25,7 @@ public class StationModelControllerTest {
 
     @Before
     public void setUp() {
-        // Mock the behavior of the stationModelRepository
-        StationModel stationModel = new StationModel();
-        stationModel.setId(1L);
-        stationModel.setName("Station 1");
-        when(stationModelRepository.findById(1L)).thenReturn(Optional.of(stationModel));
-
-        List<StationModel> stationModels = Arrays.asList(stationModel);
-        when(stationModelRepository.findAll()).thenReturn(stationModels);
     }
-
 
     @Test(expected = EntityNotFoundException.class)
     public void testGetStationModelByIdNotFound() {

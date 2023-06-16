@@ -13,8 +13,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -34,15 +32,7 @@ public class WagonControllerTest {
 
     @Before
     public void setUp() {
-        // Mock the behavior of the wagonRepository
-        Wagon wagon = new Wagon();
-        wagon.setId(1L);
-        wagon.setNumber("W1");
-        wagon.setType("Type 1");
-        when(wagonRepository.findById(1L)).thenReturn(Optional.of(wagon));
 
-        List<Wagon> wagons = Arrays.asList(wagon);
-        when(wagonRepository.findAll()).thenReturn(wagons);
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -99,5 +89,6 @@ public class WagonControllerTest {
     }
 
 }
+
 
 

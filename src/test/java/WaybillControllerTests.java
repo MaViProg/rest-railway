@@ -5,6 +5,7 @@ import com.ikonnikova.restrailway.conroller.WaybillController;
 import com.ikonnikova.restrailway.dto.CreateWaybillRequestDto;
 import com.ikonnikova.restrailway.entity.Cargo;
 import com.ikonnikova.restrailway.entity.Waybill;
+import com.ikonnikova.restrailway.exceptions.EntityNotFoundException;
 import com.ikonnikova.restrailway.repository.WagonRepository;
 import com.ikonnikova.restrailway.repository.WaybillRepository;
 import com.ikonnikova.restrailway.service.WaybillService;
@@ -121,10 +122,16 @@ public class WaybillControllerTests {
     }
 
 
-    @Test
+    @Test(expected = EntityNotFoundException.class)
     public void testDeleteWaybill() {
+        // Arrange
+        when(waybillRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act
         waybillController.deleteWaybill(1L);
 
+        // Assert
         verify(waybillRepository).deleteById(1L);
     }
+
 }
