@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Сервис для работы с вагонами.
+ */
 @Service
 public class WagonService {
 
@@ -28,33 +31,32 @@ public class WagonService {
      * На входе список вагонов с учетом на какой путь станции данные вагоны принимаются.
      * Вагоны могут приниматься только в конец состава.
      *
-     * @param
-     * @param stationTrackId
+     * @param wagonsId       список идентификаторов вагонов
+     * @param stationTrackId идентификатор пути станции
      */
     public void receiveWagons(List<Long> wagonsId, Long stationTrackId) {
-    StationTrack stationTrack = stationTrackRepository.findById(stationTrackId)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid station track ID"));
+        StationTrack stationTrack = stationTrackRepository.findById(stationTrackId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid station track ID"));
 
-    Wagon lastWagon = wagonRepository.findTopByStationTrackOrderByPositionDesc(stationTrack);
-    int position = lastWagon != null ? lastWagon.getPosition() : 1;
+        Wagon lastWagon = wagonRepository.findTopByStationTrackOrderByPositionDesc(stationTrack);
+        int position = lastWagon != null ? lastWagon.getPosition() : 1;
 
-    for (Wagon wagon : wagonRepository.findAllById(wagonsId)) {
-        wagon.setStationTrack(stationTrack);
-        wagon.setPosition(position == 0 ? WagonMovePosition.HEAD : WagonMovePosition.TAIL);
-        wagonRepository.save(wagon);
-        position = 0;
+        for (Wagon wagon : wagonRepository.findAllById(wagonsId)) {
+            wagon.setStationTrack(stationTrack);
+            wagon.setPosition(position == 0 ? WagonMovePosition.HEAD : WagonMovePosition.TAIL);
+            wagonRepository.save(wagon);
+            position = 0;
+        }
     }
-}
-
 
     /**
      * Операция перестановки вагонов внутри станции.
      * На входе список вагонов и путь на который они будут перемещены.
      * Вагоны могут быть перемещены только в начало или конец состава.
-     * http://localhost:8084/api/wagons/move
      *
-     * @param wagons
-     * @param stationTrackId
+     * @param wagons          список идентификаторов вагонов
+     * @param stationTrackId  идентификатор пути станции
+     * @param direction       направление перемещения вагонов
      */
     public void moveWagons(List<Long> wagons, Long stationTrackId, WagonMovePosition direction) {
         StationTrack destinationStationTrack = stationTrackRepository.findById(stationTrackId)
@@ -100,8 +102,4 @@ public class WagonService {
             }
         }
     }
-
-
-
-
 }
