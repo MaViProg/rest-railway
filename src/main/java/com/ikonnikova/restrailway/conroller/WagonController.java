@@ -25,11 +25,11 @@ import java.util.stream.Collectors;
 
 
 /**
- * Wagon controller
+ * Rest controller for managing wagons.
  */
 @RestController
 @RequestMapping("/api/wagons")
-@Tag(name = "Wagon controller", description = "Wagon controller API")
+@Tag(name = "Wagon controller", description = "API for managing wagons")
 public class WagonController {
 
     @Autowired
@@ -41,6 +41,13 @@ public class WagonController {
     @Autowired
     private ModelMapper modelMapper;
 
+    /**
+     * Get wagon by ID.
+     *
+     * @param id The ID of the wagon.
+     * @return The wagon with the specified ID.
+     * @throws EntityNotFoundException if the wagon is not found.
+     */
     @GetMapping("/{id}")
     @Operation(summary = "Get wagon by ID")
     @ApiResponses(value = {
@@ -55,6 +62,11 @@ public class WagonController {
         return modelMapper.map(wagon, WagonDTO.class);
     }
 
+    /**
+     * Get all wagons.
+     *
+     * @return The list of all wagons.
+     */
     @GetMapping
     @Operation(summary = "Get all wagons")
     public List<WagonDTO> getAllWagons() {
@@ -64,6 +76,12 @@ public class WagonController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Create a new wagon.
+     *
+     * @param wagon The wagon to create.
+     * @return The created wagon.
+     */
     @PostMapping
     @Operation(summary = "Create a wagon")
     @ApiResponse(responseCode = "200", description = "Wagon created successfully")
@@ -71,6 +89,14 @@ public class WagonController {
         return wagonRepository.save(wagon);
     }
 
+    /**
+     * Update a wagon.
+     *
+     * @param id              The ID of the wagon to update.
+     * @param updatedWagonDTO The updated wagon data.
+     * @return The updated wagon.
+     * @throws EntityNotFoundException if the wagon is not found.
+     */
     @PutMapping("/{id}")
     @Operation(summary = "Update a wagon")
     @ApiResponses(value = {
@@ -91,6 +117,13 @@ public class WagonController {
         return modelMapper.map(savedWagon, WagonDTO.class);
     }
 
+    /**
+     * Delete a wagon by ID.
+     *
+     * @param id The ID of the wagon to delete.
+     * @return ResponseEntity indicating the success of the operation.
+     * @throws EntityNotFoundException if the wagon is not found.
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a wagon by ID")
     @ApiResponses(value = {
@@ -104,6 +137,12 @@ public class WagonController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Receive wagons.
+     *
+     * @param receiveWagonsRequestDTO The request containing wagon IDs and station track ID.
+     * @return ResponseEntity indicating the success of the operation.
+     */
     @PostMapping("/receive")
     @Operation(summary = "Receive wagons")
     @ApiResponse(responseCode = "200", description = "Wagons received successfully")
@@ -112,6 +151,12 @@ public class WagonController {
         return ResponseEntity.ok("Wagons received successfully");
     }
 
+    /**
+     * Move wagons.
+     *
+     * @param request The request containing wagon IDs, station track ID, and position.
+     * @return ResponseEntity indicating the success of the operation or the error message.
+     */
     @PostMapping("/move-wagons")
     @Operation(summary = "Move wagons")
     @ApiResponses(value = {
@@ -131,4 +176,5 @@ public class WagonController {
         }
     }
 }
+
 
