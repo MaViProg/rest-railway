@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "com.ikonnikova.restrailway.repository",
         repositoryBaseClass = SimpleJpaRepository.class)
@@ -21,18 +20,6 @@ public class RestRailwaySecurityApplication {
     public static void main(String[] args) {
         SpringApplication.run(RestRailwaySecurityApplication.class, args);
     }
-
-//    @Bean
-//    public OpenAPI customOpenAPI(@Value("${info.application.version:none}") String appVersion) {
-//        return new OpenAPI().info(new Info()
-//                .title("WAGON - API")
-//                .version(appVersion)
-//                .description("This is a rest service created using springdocs - " +
-//                        "a library for OpenAPI 3 with spring boot.")
-//                .termsOfService("../")
-//                .license(new License().name("Mavi license")
-//                        .url("http://uralsib.ru")));
-//    }
 
 }
 

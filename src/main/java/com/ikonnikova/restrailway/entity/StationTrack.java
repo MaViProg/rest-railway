@@ -12,6 +12,10 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * Entity StationTrack
+ * Пути станций
+ */
 @Entity
 @Table(name = "station_track")
 @AllArgsConstructor

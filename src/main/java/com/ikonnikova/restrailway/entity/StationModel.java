@@ -14,6 +14,10 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Entity StationModel
+ * Станционная модель (Станции, Пути станций)
+ */
 @Entity
 @Table(name = "station")
 @AllArgsConstructor

@@ -9,6 +9,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
+/**
+ * Конфигурационный класс для настройки Spring Security.
+ */
+
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -40,6 +44,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${spring.security.user.role3}")
     private String employeeRole;
 
+    /**
+     * Настраивает аутентификацию пользователей.
+     *
+     * @param auth Объект AuthenticationManagerBuilder для настройки аутентификации.
+     * @throws Exception Если произошла ошибка при настройке аутентификации.
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
@@ -59,6 +69,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .roles(employeeRole);
     }
 
+    /**
+     * Настраивает доступ к различным URL-адресам веб-приложения в зависимости от ролей пользователей.
+     *
+     * @param http Объект HttpSecurity для настройки доступа.
+     * @throws Exception Если произошла ошибка при настройке доступа.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -73,6 +89,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin();
     }
 
+    /**
+     * Настраивает игнорирование доступа к определенным ресурсам веб-приложения.
+     *
+     * @param web Объект WebSecurity для настройки игнорирования доступа.
+     * @throws Exception Если произошла ошибка при настройке игнорирования доступа.
+     */
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/resources/**");

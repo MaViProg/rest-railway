@@ -51,8 +51,7 @@ public class WagonService {
      * Операция перестановки вагонов внутри станции.
      * На входе список вагонов и путь на который они будут перемещены.
      * Вагоны могут быть перемещены только в начало или конец состава.
-     * <p>
-     * http://localhost:8083/api/wagons/move
+     * http://localhost:8084/api/wagons/move
      *
      * @param wagons
      * @param stationTrackId

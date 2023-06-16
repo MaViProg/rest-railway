@@ -6,12 +6,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * Конфигурационный класс для настройки Swagger.
  * http://localhost:8084/swagger-ui/index.html
  */
-
 @Configuration
 public class SwaggerConfig {
 
+    /**
+     * Создает и настраивает экземпляр OpenAPI для документирования API.
+     *
+     * @return Объект OpenAPI для документации API.
+     */
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
@@ -21,5 +26,6 @@ public class SwaggerConfig {
                         .description("API для учета операций с вагонами на предприятии"));
     }
 }
+
 
 

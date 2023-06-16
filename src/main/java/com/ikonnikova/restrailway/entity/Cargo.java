@@ -14,10 +14,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 
-
 /**
+ * Entity Cargo
  * Справочник номенклатур грузов (Код груза, Наименование груза)
- * 
  */
 @Entity
 @Table(name = "cargo")
