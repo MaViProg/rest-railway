@@ -7,20 +7,20 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Rest controller for managing cargos.
- */
-
 @RestController
 @RequestMapping("/api/cargos")
 @Tag(name = "Cargo API", description = "API for managing cargos")
 public class CargoController {
+
+    private static final Logger logger = LoggerFactory.getLogger(CargoController.class);
 
     @Autowired
     private CargoRepository cargoRepository;
@@ -34,7 +34,10 @@ public class CargoController {
     @PostMapping
     @Operation(summary = "Create a cargo")
     public Cargo createCargo(@RequestBody Cargo cargo) {
-        return cargoRepository.save(cargo);
+        logger.info("Creating a cargo: {}", cargo);
+        Cargo createdCargo = cargoRepository.save(cargo);
+        logger.info("Cargo created: {}", createdCargo);
+        return createdCargo;
     }
 
     /**
@@ -51,8 +54,12 @@ public class CargoController {
             @ApiResponse(responseCode = "404", description = "Cargo not found")
     })
     public Cargo getCargoById(@PathVariable Long id) {
+        logger.info("Getting cargo by ID: {}", id);
         return cargoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Cargo not found"));
+                .orElseThrow(() -> {
+                    logger.error("Cargo not found with ID: {}", id);
+                    return new EntityNotFoundException("Cargo not found");
+                });
     }
 
     /**
@@ -63,6 +70,7 @@ public class CargoController {
     @GetMapping
     @Operation(summary = "Get all cargos")
     public List<Cargo> getAllCargos() {
+        logger.info("Getting all cargos");
         return cargoRepository.findAll();
     }
 
@@ -77,11 +85,17 @@ public class CargoController {
     @PutMapping("/{id}")
     @Operation(summary = "Update a cargo")
     public Cargo updateCargo(@PathVariable Long id, @RequestBody Cargo updatedCargo) {
+        logger.info("Updating cargo with ID: {}", id);
         Cargo cargo = cargoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Cargo not found"));
+                .orElseThrow(() -> {
+                    logger.error("Cargo not found with ID: {}", id);
+                    return new EntityNotFoundException("Cargo not found");
+                });
         cargo.setCode(updatedCargo.getCode());
         cargo.setName(updatedCargo.getName());
-        return cargoRepository.save(cargo);
+        Cargo updatedCargoObj = cargoRepository.save(cargo);
+        logger.info("Cargo updated: {}", updatedCargoObj);
+        return updatedCargoObj;
     }
 
     /**
@@ -94,9 +108,15 @@ public class CargoController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a cargo by ID")
     public ResponseEntity<?> deleteCargoById(@PathVariable Long id) {
+        logger.info("Deleting cargo with ID: {}", id);
         Cargo cargo = cargoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Cargo not found"));
+                .orElseThrow(() -> {
+                    logger.error("Cargo not found with ID: {}", id);
+                    return new EntityNotFoundException("Cargo not found");
+                });
         cargoRepository.delete(cargo);
+        logger.info("Cargo deleted with ID: {}", id);
         return ResponseEntity.ok().build();
     }
 }
+
