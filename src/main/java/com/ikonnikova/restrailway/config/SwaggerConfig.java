@@ -8,6 +8,18 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Конфигурационный класс для настройки Swagger.
  * http://localhost:8084/swagger-ui/index.html
+ *
+ * Обязательно необходимы эти зависимости:
+ *         <dependency>
+ *             <groupId>com.fasterxml.jackson.core</groupId>
+ *             <artifactId>jackson-annotations</artifactId>
+ *             <version>${jackson.version}</version>
+ *         </dependency>
+ *         <dependency>
+ *             <groupId>com.fasterxml.jackson.core</groupId>
+ *             <artifactId>jackson-core</artifactId>
+ *             <version>${jackson.version}</version>
+ *         </dependency>
  */
 @Configuration
 public class SwaggerConfig {
