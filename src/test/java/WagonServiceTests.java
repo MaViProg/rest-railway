@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class WagonServiceTest {
+public class WagonServiceTests {
 
     @Mock
     private WagonRepository wagonRepository;
