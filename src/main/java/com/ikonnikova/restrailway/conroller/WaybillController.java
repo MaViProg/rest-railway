@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Rest controller for managing waybills.
+ */
+
 @RestController
 @RequestMapping("/api/waybills")
 @Tag(name = "Waybill controller", description = "Waybill API")
@@ -36,10 +40,9 @@ public class WaybillController {
     private WagonService wagonService;
 
     /**
-     * getAllWaybills()
-     * GET http://localhost:8084/api/waybills
+     * Get all waybills.
      *
-     * @return
+     * @return The list of all waybills.
      */
     @GetMapping
     @Operation(summary = "Get all waybills")
@@ -49,17 +52,18 @@ public class WaybillController {
     }
 
     /**
-     * getWaybillById()
-     * GET http://localhost:8083/api/waybills/id
+     * Get waybill by ID.
      *
-     * @param id
-     * @return
+     * @param id The ID of the waybill.
+     * @return The waybill with the specified ID.
+     * @throws EntityNotFoundException if the waybill is not found.
      */
     @GetMapping("/{id}")
     @Operation(summary = "Get waybill by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Waybill retrieved successfully", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Waybill.class))}),
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Waybill.class))
+            }),
             @ApiResponse(responseCode = "404", description = "Waybill not found")
     })
     public Waybill getWaybillById(@PathVariable Long id) {
@@ -68,49 +72,47 @@ public class WaybillController {
     }
 
     /**
-     * createWaybill()
-     * POST http://localhost:8083/api/waybills/
+     * Create a waybill.
      *
-     * @param createWaybillRequestDto
-     * @return
+     * @param createWaybillRequestDto The request data for creating a waybill.
+     * @return The response data containing the created waybill.
      */
     @PostMapping
     @Operation(summary = "Create a waybill")
     @ApiResponse(responseCode = "201", description = "Waybill created successfully", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = CreateWaybillResponseDto.class))})
+            @Content(mediaType = "application/json", schema = @Schema(implementation = CreateWaybillResponseDto.class))
+    })
     public CreateWaybillResponseDto createWaybill(@RequestBody CreateWaybillRequestDto createWaybillRequestDto) {
-
         Waybill waybill = new Waybill();
-
         waybill.setCargoWeight(createWaybillRequestDto.getCargoWeight());
         waybill.setWagonWeight(createWaybillRequestDto.getWagonWeight());
         waybill.setSerialNumber(createWaybillRequestDto.getSerialNumber());
         waybill.setWagonNumber(createWaybillRequestDto.getWagonNumber());
 
         Cargo cargo = new Cargo();
-
         cargo.setId(createWaybillRequestDto.getCargoId());
         waybill.setCargo(cargo);
 
-        Waybill waybill2 = waybillService.createWaybill(waybill);
+        Waybill createdWaybill = waybillService.createWaybill(waybill);
+
         CreateWaybillResponseDto createWaybillResponseDto = new CreateWaybillResponseDto();
-        createWaybillResponseDto.setCargoWeight(waybill2.getCargoWeight());
-        createWaybillResponseDto.setWagonWeight(waybill2.getWagonWeight());
-        createWaybillResponseDto.setSerialNumber(waybill2.getSerialNumber());
-        createWaybillResponseDto.setWagonNumber(waybill2.getWagonNumber());
-        createWaybillResponseDto.setCargoId(waybill2.getCargo().getId());
-        createWaybillResponseDto.setId(waybill2.getId());
+        createWaybillResponseDto.setCargoWeight(createdWaybill.getCargoWeight());
+        createWaybillResponseDto.setWagonWeight(createdWaybill.getWagonWeight());
+        createWaybillResponseDto.setSerialNumber(createdWaybill.getSerialNumber());
+        createWaybillResponseDto.setWagonNumber(createdWaybill.getWagonNumber());
+        createWaybillResponseDto.setCargoId(createdWaybill.getCargo().getId());
+        createWaybillResponseDto.setId(createdWaybill.getId());
 
         return createWaybillResponseDto;
     }
 
     /**
-     * updateWaybill()
-     * PUT http://localhost:8083/api/waybills/id
+     * Update a waybill.
      *
-     * @param updateWaybillDto
-     * @param id
-     * @return
+     * @param updateWaybillDto The request data for updating the waybill.
+     * @param id               The ID of the waybill to update.
+     * @return The updated waybill.
+     * @throws EntityNotFoundException if the waybill is not found.
      */
     @PutMapping("/{id}")
     @Operation(summary = "Update a waybill")
@@ -118,11 +120,10 @@ public class WaybillController {
             @ApiResponse(responseCode = "200", description = "Waybill updated successfully"),
             @ApiResponse(responseCode = "404", description = "Waybill not found")
     })
-    public Waybill updateWaybill(@RequestBody UpdateWaybillDto updateWaybillDto,
-                                 @PathVariable Long id) {
+    public Waybill updateWaybill(@RequestBody UpdateWaybillDto updateWaybillDto, @PathVariable Long id) {
+        Waybill waybill = waybillRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Waybill not found with id " + id));
 
-        Waybill waybill = new Waybill();
-        waybill.setId(id);
         waybill.setCargoWeight(updateWaybillDto.getCargoWeight());
         waybill.setWagonWeight(updateWaybillDto.getWagonWeight());
         waybill.setSerialNumber(updateWaybillDto.getSerialNumber());
@@ -130,16 +131,16 @@ public class WaybillController {
 
         Cargo cargo = new Cargo();
         cargo.setId(updateWaybillDto.getCargoId());
-
         waybill.setCargo(cargo);
+
         return waybillRepository.save(waybill);
     }
 
     /**
-     * deleteWaybill()
-     * DELETE http://localhost:8083/api/waybills/id
+     * Delete a waybill by ID.
      *
-     * @param id
+     * @param id The ID of the waybill to delete.
+     * @throws EntityNotFoundException if the waybill is not found.
      */
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a waybill")
@@ -148,18 +149,17 @@ public class WaybillController {
             @ApiResponse(responseCode = "404", description = "Waybill not found")
     })
     public void deleteWaybill(@PathVariable Long id) {
+        if (!waybillRepository.existsById(id)) {
+            throw new EntityNotFoundException("Waybill not found with id " + id);
+        }
         waybillRepository.deleteById(id);
     }
 
     /**
-     * Операция убытия вагонов на сеть РЖД.
-     * Вагоны могут убывать только с начала состава.
-     * waybillId} - фактический идентификатор накладной
-     * <p>
-     * POST http://localhost:8083/api/waybills/1/depart
+     * Depart wagons for a given waybill.
      *
-     * @param waybillId
-     * @return
+     * @param waybillId The ID of the waybill.
+     * @return ResponseEntity indicating the success of the operation or the error message.
      */
     @PostMapping("/{waybillId}/depart")
     @Operation(summary = "Depart wagons")
@@ -171,9 +171,7 @@ public class WaybillController {
         try {
             waybillService.departWagons(waybillId);
             return ResponseEntity.ok("Wagons departed successfully");
-
         } catch (IllegalArgumentException | IllegalStateException e) {
-
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
