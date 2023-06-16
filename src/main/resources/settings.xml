@@ -1,0 +1,7 @@
+<mirrors>
+    <mirror>
+        <id>central</id>
+        <url>http://central.maven.org/maven2/</url>
+        <mirrorOf>central</mirrorOf>
+    </mirror>
+</mirrors>
