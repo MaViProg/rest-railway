@@ -15,14 +15,23 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Rest controller for managing station models.
+ */
+
 @RestController
 @RequestMapping("/api/station-models")
-@Tag(name = "Station model", description = "Station model API")
+@Tag(name = "Station model", description = "API for managing station models")
 public class StationModelController {
 
     @Autowired
     StationModelRepository stationModelRepository;
 
+    /**
+     * Get all station models.
+     *
+     * @return The list of all station models.
+     */
     @GetMapping
     @Operation(summary = "Get all station models")
     @ApiResponse(responseCode = "200", description = "Success", content = {
@@ -32,6 +41,13 @@ public class StationModelController {
         return stationModelRepository.findAll();
     }
 
+    /**
+     * Get a station model by ID.
+     *
+     * @param id The ID of the station model.
+     * @return The station model with the specified ID.
+     * @throws EntityNotFoundException if the station model is not found.
+     */
     @GetMapping("/{id}")
     @Operation(summary = "Get a station model by ID")
     @ApiResponses(value = {
@@ -45,6 +61,12 @@ public class StationModelController {
                 new EntityNotFoundException("Station model not found with ID: " + id));
     }
 
+    /**
+     * Create a new station model.
+     *
+     * @param stationModel The station model to create.
+     * @return The created station model.
+     */
     @PostMapping
     @Operation(summary = "Create a station model")
     @ApiResponse(responseCode = "201", description = "Station model created successfully", content = {
@@ -54,6 +76,14 @@ public class StationModelController {
         return stationModelRepository.save(stationModel);
     }
 
+    /**
+     * Update a station model.
+     *
+     * @param id           The ID of the station model to update.
+     * @param stationModel The updated station model data.
+     * @return The updated station model.
+     * @throws EntityNotFoundException if the station model is not found.
+     */
     @PutMapping("/{id}")
     @Operation(summary = "Update a station model")
     @ApiResponses(value = {
@@ -67,6 +97,12 @@ public class StationModelController {
         return stationModelRepository.save(stationModel);
     }
 
+    /**
+     * Delete a station model by ID.
+     *
+     * @param id The ID of the station model to delete.
+     * @throws EntityNotFoundException if the station model is not found.
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a station model by ID")
     @ApiResponses(value = {
@@ -77,3 +113,4 @@ public class StationModelController {
         stationModelRepository.deleteById(id);
     }
 }
+
