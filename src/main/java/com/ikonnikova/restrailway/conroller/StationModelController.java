@@ -19,12 +19,12 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * Rest controller for managing station models.
+ * Rest controller for station models.
  */
 
 @RestController
 @RequestMapping("/api/station-models")
-@Tag(name = "Station model", description = "API for managing station models")
+@Tag(name = "Station model", description = "API for station models")
 public class StationModelController {
 
     private static final Logger logger = LoggerFactory.getLogger(StationModelController.class);

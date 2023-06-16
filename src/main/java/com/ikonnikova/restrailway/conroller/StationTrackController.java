@@ -12,17 +12,21 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 /**
- * Rest controller for managing station tracks.
+ * Rest controller for station tracks.
  */
 
 @RestController
 @RequestMapping("/api/station-tracks")
-@Tag(name = "Station Track", description = "API for managing station tracks")
+@Tag(name = "Station Track", description = "API for station tracks")
 public class StationTrackController {
+
+    private static final Logger logger = LoggerFactory.getLogger(StationTrackController.class);
 
     @Autowired
     private StationTrackRepository stationTrackRepository;
@@ -38,6 +42,7 @@ public class StationTrackController {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = StationTrack.class)))
     })
     public List<StationTrack> getAllStationTracks() {
+        logger.info("Get all station tracks");
         return stationTrackRepository.findAll();
     }
 
@@ -57,6 +62,7 @@ public class StationTrackController {
             @ApiResponse(responseCode = "404", description = "Station track not found")
     })
     public StationTrack getStationTrackById(@PathVariable Long id) {
+        logger.info("Get station track by ID: {}", id);
         return stationTrackRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Station track not found with ID: " + id));
     }
@@ -73,6 +79,7 @@ public class StationTrackController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = StationTrack.class))
     })
     public StationTrack createStationTrack(@RequestBody StationTrack stationTrack) {
+        logger.info("Create station track: {}", stationTrack);
         return stationTrackRepository.save(stationTrack);
     }
 
@@ -93,6 +100,7 @@ public class StationTrackController {
             @ApiResponse(responseCode = "404", description = "Station track not found")
     })
     public StationTrack updateStationTrack(@PathVariable Long id, @RequestBody StationTrack stationTrack) {
+        logger.info("Update station track with ID: {}", id);
         stationTrack.setId(id);
         return stationTrackRepository.save(stationTrack);
     }
@@ -110,6 +118,7 @@ public class StationTrackController {
             @ApiResponse(responseCode = "404", description = "Station track not found")
     })
     public void deleteStationTrackById(@PathVariable Long id) {
+        logger.info("Delete station track with ID: {}", id);
         stationTrackRepository.deleteById(id);
     }
 }

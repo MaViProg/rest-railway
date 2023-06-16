@@ -15,6 +15,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,12 +27,14 @@ import java.util.stream.Collectors;
 
 
 /**
- * Rest controller for managing wagons.
+ * Rest controller for wagons.
  */
 @RestController
 @RequestMapping("/api/wagons")
 @Tag(name = "Wagon controller", description = "API for managing wagons")
 public class WagonController {
+
+    private static final Logger logger = LoggerFactory.getLogger(WagonController.class);
 
     @Autowired
     private WagonRepository wagonRepository;
@@ -57,6 +61,7 @@ public class WagonController {
             @ApiResponse(responseCode = "404", description = "Wagon not found")
     })
     public WagonDTO getWagonById(@PathVariable Long id) {
+        logger.info("Get wagon by ID: {}", id);
         Wagon wagon = wagonRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Wagon not found with id " + id));
         return modelMapper.map(wagon, WagonDTO.class);
@@ -70,6 +75,7 @@ public class WagonController {
     @GetMapping
     @Operation(summary = "Get all wagons")
     public List<WagonDTO> getAllWagons() {
+        logger.info("Get all wagons");
         List<Wagon> wagons = wagonRepository.findAll();
         return wagons.stream()
                 .map(wagon -> modelMapper.map(wagon, WagonDTO.class))
@@ -86,6 +92,7 @@ public class WagonController {
     @Operation(summary = "Create a wagon")
     @ApiResponse(responseCode = "200", description = "Wagon created successfully")
     public Wagon createWagon(@Valid @RequestBody Wagon wagon) {
+        logger.info("Create wagon: {}", wagon);
         return wagonRepository.save(wagon);
     }
 
@@ -106,6 +113,7 @@ public class WagonController {
             @ApiResponse(responseCode = "404", description = "Wagon not found")
     })
     public WagonDTO updateWagon(@PathVariable Long id, @RequestBody WagonDTO updatedWagonDTO) {
+        logger.info("Update wagon with ID: {}", id);
         Wagon wagon = wagonRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Wagon not found with id " + id));
         wagon.setNumber(updatedWagonDTO.getNumber());
@@ -131,6 +139,7 @@ public class WagonController {
             @ApiResponse(responseCode = "404", description = "Wagon not found")
     })
     public ResponseEntity<?> deleteWagonById(@PathVariable Long id) {
+        logger.info("Delete wagon with ID: {}", id);
         Wagon wagon = wagonRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Wagon not found"));
         wagonRepository.delete(wagon);
@@ -147,6 +156,7 @@ public class WagonController {
     @Operation(summary = "Receive wagons")
     @ApiResponse(responseCode = "200", description = "Wagons received successfully")
     public ResponseEntity<String> receiveWagons(@RequestBody ReceiveWagonsRequestDTO receiveWagonsRequestDTO) {
+        logger.info("Receive wagons: {}", receiveWagonsRequestDTO);
         wagonService.receiveWagons(receiveWagonsRequestDTO.getWagonsId(), receiveWagonsRequestDTO.getStationTrackId());
         return ResponseEntity.ok("Wagons received successfully");
     }
@@ -164,6 +174,7 @@ public class WagonController {
             @ApiResponse(responseCode = "400", description = "Bad request")
     })
     public ResponseEntity<String> moveWagons(@RequestBody MoveWagonsRequestDTO request) {
+        logger.info("Move wagons: {}", request);
         List<Long> wagons = request.getWagons();
         Long stationTrackId = request.getStationTrackId();
         WagonMovePosition direction = request.getPosition();

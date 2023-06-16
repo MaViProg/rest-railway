@@ -6,7 +6,7 @@
 
     <groupId>com.ikonnikova</groupId>
     <artifactId>rest-railway</artifactId>
-    <version>0.0.03</version>
+    <version>0.0.04</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

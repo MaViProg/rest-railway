@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/cargos")
-@Tag(name = "Cargo API", description = "API for managing cargos")
+@Tag(name = "Cargo API", description = "API for cargos")
 public class CargoController {
 
     private static final Logger logger = LoggerFactory.getLogger(CargoController.class);
