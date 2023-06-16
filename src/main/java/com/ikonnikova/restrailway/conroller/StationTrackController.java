@@ -15,15 +15,23 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Rest controller for managing station tracks.
+ */
 
 @RestController
 @RequestMapping("/api/station-tracks")
-@Tag(name = "Station Track", description = "Station Track API")
+@Tag(name = "Station Track", description = "API for managing station tracks")
 public class StationTrackController {
 
     @Autowired
     private StationTrackRepository stationTrackRepository;
 
+    /**
+     * Get all station tracks.
+     *
+     * @return The list of all station tracks.
+     */
     @GetMapping
     @Operation(summary = "Get all station tracks")
     @ApiResponse(responseCode = "200", description = "Success", content = {
@@ -33,6 +41,13 @@ public class StationTrackController {
         return stationTrackRepository.findAll();
     }
 
+    /**
+     * Get a station track by ID.
+     *
+     * @param id The ID of the station track.
+     * @return The station track with the specified ID.
+     * @throws EntityNotFoundException if the station track is not found.
+     */
     @GetMapping("/{id}")
     @Operation(summary = "Get a station track by ID")
     @ApiResponses(value = {
@@ -46,6 +61,12 @@ public class StationTrackController {
                 new EntityNotFoundException("Station track not found with ID: " + id));
     }
 
+    /**
+     * Create a new station track.
+     *
+     * @param stationTrack The station track to create.
+     * @return The created station track.
+     */
     @PostMapping
     @Operation(summary = "Create a station track")
     @ApiResponse(responseCode = "201", description = "Station track created successfully", content = {
@@ -55,6 +76,14 @@ public class StationTrackController {
         return stationTrackRepository.save(stationTrack);
     }
 
+    /**
+     * Update a station track.
+     *
+     * @param id           The ID of the station track to update.
+     * @param stationTrack The updated station track data.
+     * @return The updated station track.
+     * @throws EntityNotFoundException if the station track is not found.
+     */
     @PutMapping("/{id}")
     @Operation(summary = "Update a station track")
     @ApiResponses(value = {
@@ -68,6 +97,12 @@ public class StationTrackController {
         return stationTrackRepository.save(stationTrack);
     }
 
+    /**
+     * Delete a station track by ID.
+     *
+     * @param id The ID of the station track to delete.
+     * @throws EntityNotFoundException if the station track is not found.
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a station track by ID")
     @ApiResponses(value = {
@@ -78,3 +113,4 @@ public class StationTrackController {
         stationTrackRepository.deleteById(id);
     }
 }
+
