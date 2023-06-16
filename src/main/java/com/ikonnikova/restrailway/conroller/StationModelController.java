@@ -13,6 +13,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 /**
@@ -24,8 +27,10 @@ import java.util.List;
 @Tag(name = "Station model", description = "API for managing station models")
 public class StationModelController {
 
+    private static final Logger logger = LoggerFactory.getLogger(StationModelController.class);
+
     @Autowired
-    StationModelRepository stationModelRepository;
+    private StationModelRepository stationModelRepository;
 
     /**
      * Get all station models.
@@ -38,6 +43,7 @@ public class StationModelController {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = StationModel.class)))
     })
     public List<StationModel> getAllStationModels() {
+        logger.info("Getting all station models");
         return stationModelRepository.findAll();
     }
 
@@ -57,8 +63,12 @@ public class StationModelController {
             @ApiResponse(responseCode = "404", description = "Station model not found")
     })
     public StationModel getStationModelById(@PathVariable Long id) {
-        return stationModelRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Station model not found with ID: " + id));
+        logger.info("Getting station model by ID: {}", id);
+        return stationModelRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("Station model not found with ID: {}", id);
+                    return new EntityNotFoundException("Station model not found with ID: " + id);
+                });
     }
 
     /**
@@ -73,7 +83,10 @@ public class StationModelController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = StationModel.class))
     })
     public StationModel createStationModel(@RequestBody StationModel stationModel) {
-        return stationModelRepository.save(stationModel);
+        logger.info("Creating a station model: {}", stationModel);
+        StationModel createdStationModel = stationModelRepository.save(stationModel);
+        logger.info("Station model created: {}", createdStationModel);
+        return createdStationModel;
     }
 
     /**
@@ -93,8 +106,14 @@ public class StationModelController {
             @ApiResponse(responseCode = "404", description = "Station model not found")
     })
     public StationModel updateStationModel(@PathVariable Long id, @RequestBody StationModel stationModel) {
+        logger.info("Updating station model with ID: {}", id);
+        logger.info("Updated station model: {}", stationModel);
+
         stationModel.setId(id);
-        return stationModelRepository.save(stationModel);
+        StationModel updatedStationModel = stationModelRepository.save(stationModel);
+
+        logger.info("Station model updated successfully: {}", updatedStationModel);
+        return updatedStationModel;
     }
 
     /**
@@ -110,7 +129,15 @@ public class StationModelController {
             @ApiResponse(responseCode = "404", description = "Station model not found")
     })
     public void deleteStationModelById(@PathVariable Long id) {
-        stationModelRepository.deleteById(id);
+        logger.info("Deleting station model with ID: {}", id);
+
+        if (stationModelRepository.existsById(id)) {
+            stationModelRepository.deleteById(id);
+            logger.info("Station model deleted successfully.");
+        } else {
+            throw new EntityNotFoundException("Station model not found with ID: " + id);
+        }
     }
+
 }
 
